@@ -6,15 +6,7 @@
 <title>UGI · Asistente RRHH</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#0f1117;--surface:#171c26;--surface2:#1e2535;--surface3:#252d40;
-  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
-  --accent:#4ade80;--accent2:#22c55e;--accent-dim:rgba(74,222,128,0.12);
-  --text:#f0f4ff;--text2:#8892a4;--text3:#4a5568;
-  --bot-bg:#1e2535;--user-bg:#1a3a2a;
-  --danger:#f87171;--danger-dim:rgba(248,113,113,0.1);
-  --r:16px;--r-sm:10px;
-}
+:root{--bg:#0f1117;--surface:#171c26;--surface2:#1e2535;--surface3:#252d40;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);--accent:#4ade80;--accent2:#22c55e;--accent-dim:rgba(74,222,128,0.12);--text:#f0f4ff;--text2:#8892a4;--text3:#4a5568;--bot-bg:#1e2535;--user-bg:#1a3a2a;--danger:#f87171;--danger-dim:rgba(248,113,113,0.1);--r:16px;--r-sm:10px}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{height:100%;background:var(--bg)}
 body{height:100%;font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
@@ -69,8 +61,6 @@ body{height:100%;font-family:'Sora',sans-serif;background:var(--bg);color:var(--
 .send-btn:hover{background:var(--accent);transform:scale(1.04)}
 .send-btn:active{transform:scale(0.95)}
 .send-btn svg{width:16px;height:16px}
-
-/* LOGIN */
 .login-screen{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;z-index:100}
 .login-logo{width:72px;height:72px;border-radius:20px;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:500;color:#fff;margin-bottom:24px}
 .login-title{font-size:22px;font-weight:600;color:var(--text);margin-bottom:4px;letter-spacing:-0.5px}
@@ -89,26 +79,17 @@ body{height:100%;font-family:'Sora',sans-serif;background:var(--bg);color:var(--
 </style>
 </head>
 <body>
-
-<!-- LOGIN -->
 <div class="login-screen" id="login-screen">
   <div class="login-logo">UGI</div>
   <div class="login-title">Bienvenido/a</div>
   <div class="login-sub">Ingresá tu DNI y PIN para acceder<br>al asistente de RRHH</div>
-  <div class="login-field">
-    <label>DNI</label>
-    <input type="text" id="l-dni" placeholder="Ej: 35123456" inputmode="numeric" maxlength="9">
-  </div>
-  <div class="login-field">
-    <label>PIN (4 dígitos)</label>
-    <input type="password" id="l-pin" placeholder="••••" inputmode="numeric" maxlength="4">
-  </div>
+  <div class="login-field"><label>DNI</label><input type="text" id="l-dni" placeholder="Ej: 35123456" inputmode="numeric" maxlength="9"></div>
+  <div class="login-field"><label>PIN (4 dígitos)</label><input type="password" id="l-pin" placeholder="••••" inputmode="numeric" maxlength="4"></div>
   <button class="login-btn" id="login-btn" onclick="doLogin()">Ingresar</button>
   <div class="login-error" id="login-error"></div>
-  <div class="login-footer">Unión Ganadera · RRHH Digital</div>
+  <div class="login-footer">RRHH Digital</div>
 </div>
 
-<!-- CHAT -->
 <div class="app hidden" id="app-shell">
   <div class="header">
     <div class="logo">UGI</div>
@@ -120,161 +101,97 @@ body{height:100%;font-family:'Sora',sans-serif;background:var(--bg);color:var(--
   </div>
   <div class="messages" id="messages"></div>
   <div class="input-area">
-    <div class="input-wrap">
-      <textarea id="inp" rows="1" placeholder="Escribí tu consulta..."></textarea>
-    </div>
+    <div class="input-wrap"><textarea id="inp" rows="1" placeholder="Escribí tu consulta..."></textarea></div>
     <button class="send-btn" onclick="handleSend()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
   </div>
 </div>
 
 <script>
-// ═══ CONFIG ═══
 const CFG = {
   webhookAuth:  'https://unionganadera.app.n8n.cloud/webhook/ugi-auth',
-  webhookAviso: 'https://unionganadera.app.n8n.cloud/webhook/ugi-aviso',
+  webhookAviso: 'https://unionganadera.app.n8n.cloud/webhook/af8a3c3c-e678-4bb7-a5c3-3cafc5c9b8e3',
   hrEmail:      'ayelen.ochoteco@grupocpc.com.ar',
 };
 
-// ═══ SESSION ═══
 let session = null;
-let state   = { step:'menu', flow:null, data:{} };
+let state = { step:'menu', flow:null, data:{} };
 
-// ═══ LOGIN ═══
-const loginScreen = document.getElementById('login-screen');
-const appShell    = document.getElementById('app-shell');
-
-document.getElementById('l-pin').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-document.getElementById('l-dni').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('l-pin').focus(); });
+// LOGIN
+document.getElementById('l-pin').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+document.getElementById('l-dni').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('l-pin').focus(); });
 
 async function doLogin(){
-  const dni  = document.getElementById('l-dni').value.trim();
-  const pin  = document.getElementById('l-pin').value.trim();
-  const errEl= document.getElementById('login-error');
-  const btn  = document.getElementById('login-btn');
-  errEl.textContent = '';
+  const dni=document.getElementById('l-dni').value.trim();
+  const pin=document.getElementById('l-pin').value.trim();
+  const errEl=document.getElementById('login-error');
+  const btn=document.getElementById('login-btn');
+  errEl.textContent='';
   if(!dni||!pin){ errEl.textContent='Completá DNI y PIN.'; return; }
-  btn.disabled = true;
-  btn.textContent = 'Verificando...';
-  try {
-    const r = await fetch(CFG.webhookAuth, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ dni, pin })
-    });
-    const data = await r.json();
+  btn.disabled=true; btn.textContent='Verificando...';
+  try{
+    const r=await fetch(CFG.webhookAuth,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dni,pin})});
+    const data=await r.json();
     if(data.ok){
-      session = data;
-      loginScreen.style.opacity='0';
-      loginScreen.style.transition='opacity 0.3s';
-      setTimeout(()=>{ loginScreen.classList.add('hidden'); appShell.classList.remove('hidden'); },300);
-      document.getElementById('user-badge').textContent = `DNI ${session.dni}`;
-      document.getElementById('header-sub').textContent = session.nombre || '';
+      session=data;
+      document.getElementById('login-screen').style.opacity='0';
+      document.getElementById('login-screen').style.transition='opacity 0.3s';
+      setTimeout(()=>{ document.getElementById('login-screen').classList.add('hidden'); document.getElementById('app-shell').classList.remove('hidden'); },300);
+      document.getElementById('user-badge').textContent=`DNI ${session.dni}`;
+      document.getElementById('header-sub').textContent=session.nombre||'';
       startChat();
     } else {
-      errEl.textContent = data.mensaje || 'DNI o PIN incorrecto. Consultá a RRHH.';
-      btn.disabled = false;
-      btn.textContent = 'Ingresar';
+      errEl.textContent=data.mensaje||'DNI o PIN incorrecto. Consultá a RRHH.';
+      btn.disabled=false; btn.textContent='Ingresar';
     }
-  } catch(e) {
-    errEl.textContent = 'Error de conexión. Intentá de nuevo.';
-    btn.disabled = false;
-    btn.textContent = 'Ingresar';
+  } catch(e){
+    errEl.textContent='Error de conexión. Intentá de nuevo.';
+    btn.disabled=false; btn.textContent='Ingresar';
   }
 }
 
-// ═══ CHAT HELPERS ═══
-const msgEl = document.getElementById('messages');
-const inpEl = document.getElementById('inp');
-
+// CHAT HELPERS
+const msgEl=document.getElementById('messages');
+const inpEl=document.getElementById('inp');
 inpEl.addEventListener('input',()=>{ inpEl.style.height='auto'; inpEl.style.height=Math.min(inpEl.scrollHeight,100)+'px'; });
 inpEl.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); handleSend(); } });
-
 function scroll(){ setTimeout(()=>msgEl.scrollTop=msgEl.scrollHeight,50); }
-
 function addMsg(role,html,extraEl=null){
-  const d=document.createElement('div');
-  d.className=`msg ${role}`;
+  const d=document.createElement('div'); d.className=`msg ${role}`;
   const av=role==='bot'?`<div class="bot-av">UGI</div>`:'';
   d.innerHTML=`${av}<div class="bubble">${html}</div>`;
   if(extraEl) d.querySelector('.bubble').appendChild(extraEl);
   msgEl.appendChild(d); scroll(); return d;
 }
-
-function addTyping(){
-  const d=document.createElement('div'); d.className='msg bot'; d.id='typing';
-  d.innerHTML=`<div class="bot-av">UGI</div><div class="bubble"><div class="typing-wrap"><span></span><span></span><span></span></div></div>`;
-  msgEl.appendChild(d); scroll();
-}
+function addTyping(){ const d=document.createElement('div'); d.className='msg bot'; d.id='typing'; d.innerHTML=`<div class="bot-av">UGI</div><div class="bubble"><div class="typing-wrap"><span></span><span></span><span></span></div></div>`; msgEl.appendChild(d); scroll(); }
 function removeTyping(){ const t=document.getElementById('typing'); if(t)t.remove(); }
-
-function botReply(html,delay=600,extraEl=null){
-  addTyping();
-  return new Promise(r=>setTimeout(()=>{ removeTyping(); addMsg('bot',html,extraEl); r(); },delay));
-}
-
-function addQR(opts){
-  const d=document.createElement('div'); d.className='qr-wrap';
-  d.innerHTML=opts.map(o=>`<button class="qr" onclick="handleQR('${o.val}','${o.label}')">${o.label}</button>`).join('');
-  msgEl.appendChild(d); scroll();
-}
-
+function botReply(html,delay=600,extraEl=null){ addTyping(); return new Promise(r=>setTimeout(()=>{ removeTyping(); addMsg('bot',html,extraEl); r(); },delay)); }
+function addQR(opts){ const d=document.createElement('div'); d.className='qr-wrap'; d.innerHTML=opts.map(o=>`<button class="qr" onclick="handleQR('${o.val}','${o.label.replace(/'/g,'\\'')}')">${o.label}</button>`).join(''); msgEl.appendChild(d); scroll(); }
 function disableQRs(){ document.querySelectorAll('.qr').forEach(b=>{ b.classList.add('disabled'); b.onclick=null; }); }
+function addUpload(label,cb){ const d=document.createElement('div'); d.className='msg bot'; d.innerHTML=`<div class="bot-av" style="visibility:hidden">UGI</div><div class="bubble" style="background:transparent;border:none;padding:2px 0;width:100%"><label class="upload-zone"><input type="file" accept=".pdf,.jpg,.jpeg,.png" id="fu"><div class="uz-icon">📎</div><p>${label}</p><p class="small">PDF, JPG o PNG</p></label></div>`; msgEl.appendChild(d); d.querySelector('#fu').onchange=e=>{ const f=e.target.files[0]; if(f)cb(f); }; scroll(); }
 
-function addUpload(label,cb){
-  const d=document.createElement('div'); d.className='msg bot';
-  d.innerHTML=`<div class="bot-av" style="visibility:hidden">UGI</div><div class="bubble" style="background:transparent;border:none;padding:2px 0;width:100%">
-    <label class="upload-zone"><input type="file" accept=".pdf,.jpg,.jpeg,.png" id="fu">
-      <div class="uz-icon">📎</div><p>${label}</p><p class="small">PDF, JPG o PNG</p>
-    </label></div>`;
-  msgEl.appendChild(d);
-  d.querySelector('#fu').onchange=e=>{ const f=e.target.files[0]; if(f)cb(f); };
-  scroll();
-}
-
-// ═══ N8N WEBHOOK ═══
-async function notificar(tipo,campos){
-  const payload = {
-    tipo_aviso: tipo,
-    dni: session.dni,
-    nombre: session.nombre,
-    legajo: session.legajo,
-    area: session.area,
-    correo_jefe: session.correo_jefe,
-    nombre_jefe: session.nombre_jefe,
-    hr_email: CFG.hrEmail,
-    fecha: new Date().toLocaleDateString('es-AR'),
-    timestamp: new Date().toISOString(),
-    ...campos
+// N8N
+async function notificar(tipo, campos){
+  const payload={
+    tipo_aviso:tipo, dni:session.dni, nombre:session.nombre,
+    legajo:session.legajo, area:session.area,
+    correo_jefe:session.correo_jefe, nombre_jefe:session.nombre_jefe,
+    hr_email:CFG.hrEmail, fecha:new Date().toLocaleDateString('es-AR'),
+    timestamp:new Date().toISOString(), ...campos
   };
-  let ok = false;
-  try {
-    const r = await fetch(CFG.webhookAviso, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    });
-    ok = r.ok;
-  } catch(e){ ok=false; }
-
-  const wrap = document.createElement('div');
-  const card = document.createElement('div');
-  card.className='confirm-card';
-  const rows = Object.entries(campos).filter(([k])=>!k.startsWith('_')).map(([k,v])=>`<div class="cc-row"><span>${k}</span><span>${v||'—'}</span></div>`).join('');
+  let ok=false;
+  try{ const r=await fetch(CFG.webhookAviso,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); ok=r.ok; }catch(e){ ok=false; }
+  const wrap=document.createElement('div');
+  const card=document.createElement('div'); card.className='confirm-card';
+  const rows=Object.entries(campos).filter(([k])=>k!=='archivo'||campos[k]).map(([k,v])=>`<div class="cc-row"><span>${k}</span><span>${v||'—'}</span></div>`).join('');
   card.innerHTML=`<div class="cc-label">📋 ${tipo}</div>${rows}`;
-  const badge = document.createElement('div');
-  badge.style.marginTop='6px';
-  badge.innerHTML = ok
-    ? `<span class="sent-badge">✓ Notificación enviada a RRHH</span>`
-    : `<div class="error-card">No se pudo conectar. Contactá a RRHH directamente.</div>`;
-  wrap.appendChild(card); wrap.appendChild(badge);
-  addMsg('bot','',wrap);
+  const badge=document.createElement('div'); badge.style.marginTop='6px';
+  badge.innerHTML=ok?`<span class="sent-badge">✓ Notificación enviada a RRHH</span>`:`<div class="error-card">No se pudo conectar. Contactá a RRHH directamente.</div>`;
+  wrap.appendChild(card); wrap.appendChild(badge); addMsg('bot','',wrap);
 }
 
-// ═══ MENU ═══
+// MENU
 async function startChat(){
   state={step:'menu',flow:null,data:{}};
   const hora=new Date().getHours();
@@ -297,7 +214,6 @@ function showMenu(){
   ]);
 }
 
-// ═══ INTENT ═══
 function detectIntent(t){
   t=t.toLowerCase();
   if(/recib[oi]|sueldo|salar/.test(t)) return 'recibo';
@@ -310,78 +226,68 @@ function detectIntent(t){
   return null;
 }
 
-// ═══ FLOWS ═══
-
-// RECIBO
-async function flowRecibo(){
-  state.step='recibo_done';
-  await botReply(`Registramos tu solicitud de recibo de sueldo. En <strong>24 a 48 hs</strong> te lo enviamos.`);
-  await notificar('Solicitud de recibo de sueldo',{'Colaborador':session.nombre,'Legajo':session.legajo||'—'});
-  setTimeout(backToMenu,2000);
+// FLOW: RECIBO
+async function flowRecibo(input){
+  if(state.step==='recibo_periodo'){
+    state.data.periodo=input; state.step='recibo_done';
+    await botReply(`Registramos tu solicitud. En <strong>24 a 48 hs</strong> te enviamos el recibo de <strong>${input}</strong>.`);
+    await notificar('Solicitud de recibo de sueldo',{'periodo':state.data.periodo});
+    setTimeout(backToMenu,2000);
+  }
 }
 
-// AUSENCIA
+// FLOW: AUSENCIA
 async function flowAusencia(input){
   const s=state.step;
   if(s==='aus_tipo'){
     disableQRs(); state.data.tipo=input;
-    if(input==='sin_cert'){
-      state.step='aus_fecha';
-      await botReply('¿Cuál es la <strong>fecha de tu ausencia</strong>? (Ej: hoy, 15/06)');
-    } else if(input==='con_cert'){
-      state.step='aus_fecha_cert';
-      await botReply('¿Cuál es la <strong>fecha de tu ausencia</strong>?');
-    } else {
-      await botReply(`Perfecto. Presentate en:<br>🏥 <strong>Centro Médico Nogoya</strong><br>Av. Hipólito Irigoyen 2218, El Talar, Pacheco<br>Llevá tu DNI. Atienden las 24hs.`);
-      await notificar('Ausencia - presentación directa de certificado',{'Tipo':'Envío directo'});
+    if(input==='sin_cert'){ state.step='aus_fecha'; await botReply('¿Cuál es la <strong>fecha de tu ausencia</strong>? (Ej: hoy, 15/06)'); }
+    else if(input==='con_cert'){ state.step='aus_fecha'; state.data.con_cert=true; await botReply('¿Cuál es la <strong>fecha de tu ausencia</strong>?'); }
+    else {
+      await botReply(`Presentate en:<br>🏥 <strong>Centro Médico Nogoya</strong><br>Av. Hipólito Irigoyen 2218, El Talar, Pacheco<br>Llevá tu DNI. Atienden las 24hs.`);
+      await notificar('Ausencia - presentación directa de certificado',{'tipo':'Envío directo de certificado'});
       setTimeout(backToMenu,3500);
     }
-  } else if(s==='aus_fecha'||s==='aus_fecha_cert'){
-    state.data.fecha=input; state.step=s==='aus_fecha'?'aus_motivo':'aus_motivo_cert';
+  } else if(s==='aus_fecha'){
+    state.data.fecha=input; state.step='aus_motivo';
     await botReply('¿Cuál es el <strong>motivo de la ausencia</strong>?');
   } else if(s==='aus_motivo'){
-    state.data.motivo=input; state.step='aus_done';
-    await botReply('Aviso registrado correctamente.');
-    await notificar('Aviso de ausencia sin certificado',{'Fecha':state.data.fecha,'Motivo':state.data.motivo});
-    setTimeout(backToMenu,2000);
-  } else if(s==='aus_motivo_cert'){
-    state.data.motivo=input; state.step='aus_upload';
-    await botReply('Adjuntá el <strong>certificado médico</strong>:');
-    addUpload('Adjuntá tu certificado (PDF, JPG o PNG)',f=>handleFile(f,'aus_cert'));
+    state.data.motivo=input; state.step='aus_dias';
+    await botReply('¿Cuántos <strong>días estimados</strong> de ausencia?');
+  } else if(s==='aus_dias'){
+    state.data.dias_estimados=input;
+    if(state.data.con_cert){
+      state.step='aus_upload';
+      await botReply('Adjuntá el <strong>certificado médico</strong>:');
+      addUpload('Adjuntá tu certificado (PDF, JPG o PNG)',f=>handleFile(f,'aus_cert'));
+    } else {
+      state.step='aus_done';
+      await botReply('Aviso registrado correctamente.');
+      await notificar('Aviso de ausencia sin certificado',{fecha:state.data.fecha,motivo:state.data.motivo,dias_estimados:state.data.dias_estimados});
+      setTimeout(backToMenu,2000);
+    }
   }
 }
 
-// TARDE
+// FLOW: TARDE
 async function flowTarde(input){
   if(state.step==='tarde_motivo'){
     state.data.motivo=input; state.step='tarde_done';
     await botReply('¡Gracias por avisar! 🙏 Notificamos a tu supervisor.');
-    await notificar('Aviso de llegada tarde',{'Motivo':state.data.motivo,'Fecha':new Date().toLocaleDateString('es-AR')});
+    await notificar('Aviso de llegada tarde',{motivo:state.data.motivo,fecha:new Date().toLocaleDateString('es-AR')});
     setTimeout(backToMenu,2000);
   }
 }
 
-// PROGRAMADA
+// FLOW: PROGRAMADA
 async function flowProgramada(input){
   const s=state.step;
   if(s==='prog_auth'){
     disableQRs();
-    if(input==='si'){
-      state.step='prog_tipo';
-      await botReply('¿Cuál es el motivo de la ausencia programada?');
-      addQR([
-        {label:'🎓 Estudios médicos',val:'estudios_medicos'},
-        {label:'📝 Trámites personales',val:'tramites'},
-        {label:'🏫 Estudio / Universidad',val:'estudio'},
-        {label:'🌴 Vacaciones',val:'vacaciones'},
-        {label:'📌 Otros',val:'otros'},
-      ]);
-    } else {
-      await botReply('Es necesario contar con la autorización de tu supervisor antes de registrar la ausencia. Una vez que tengas el OK, volvé a intentarlo.');
-      setTimeout(backToMenu,3000);
-    }
+    if(input==='si'){ state.step='prog_tipo'; await botReply('¿Cuál es el motivo de la ausencia programada?'); addQR([{label:'🎓 Estudios médicos',val:'Estudios médicos'},{label:'📝 Trámites personales',val:'Trámites personales'},{label:'🏫 Estudio / Universidad',val:'Estudio / Universidad'},{label:'🌴 Vacaciones',val:'Vacaciones'},{label:'📌 Otros',val:'Otros'}]); }
+    else { await botReply('Necesitás la autorización de tu supervisor antes de registrar la ausencia. Volvé cuando tengas el OK.'); setTimeout(backToMenu,3000); }
   } else if(s==='prog_tipo'){
-    disableQRs(); state.data.tipo=input; state.step='prog_detalle';
+    disableQRs(); state.data.tipo_ausencia=input; state.step='prog_detalle';
     await botReply('Indicame las <strong>fechas</strong> de la ausencia y cualquier observación:');
   } else if(s==='prog_detalle'){
     state.data.detalle=input; state.step='prog_cert';
@@ -389,65 +295,60 @@ async function flowProgramada(input){
     addQR([{label:'📎 Sí, adjunto ahora',val:'tiene_cert'},{label:'📅 Lo presento después',val:'sin_cert'}]);
   } else if(s==='prog_cert'){
     disableQRs();
-    if(input==='tiene_cert'){
-      state.step='prog_upload';
-      await botReply('Adjuntá el certificado:');
-      addUpload('Adjuntá el certificado de ausencia programada',f=>handleFile(f,'prog_cert'));
-    } else {
+    if(input==='tiene_cert'){ state.step='prog_upload'; await botReply('Adjuntá el certificado:'); addUpload('Adjuntá el certificado de ausencia programada',f=>handleFile(f,'prog_cert')); }
+    else {
       await botReply('Recordá presentar los permisos firmados según el procedimiento interno.');
-      await notificar('Ausencia programada',{'Tipo':state.data.tipo,'Detalle':state.data.detalle,'Certificado':'A presentar posteriormente'});
+      await notificar('Ausencia programada',{tipo_ausencia:state.data.tipo_ausencia,detalle:state.data.detalle,archivo:''});
       setTimeout(backToMenu,2500);
     }
   }
 }
 
-// CV
+// FLOW: CV
 async function flowCV(){
-  state.step='cv_done';
   await botReply(`¡Gracias por tu interés! 🙌<br>Podés enviarnos tu CV a:<br><strong>empleo@grupocpc.com.ar</strong><br><br>Si surge una búsqueda que se adapte a tu perfil, te contactaremos.`);
   setTimeout(backToMenu,4000);
 }
 
-// CONSULTA
+// FLOW: CONSULTA
 async function flowConsulta(input){
   const s=state.step;
   if(s==='cons_tipo'){
-    disableQRs(); state.data.tipo=input; state.step='cons_detalle';
+    disableQRs(); state.data.tema=input; state.step='cons_detalle';
     await botReply(`Contame más sobre tu consulta de <strong>${input}</strong>:`);
   } else if(s==='cons_detalle'){
-    state.data.detalle=input; state.step='cons_done';
+    state.data.consulta=input; state.step='cons_done';
     await botReply('Recibimos tu consulta. En <strong>24 a 48 hs</strong> te contestamos. ¡Gracias!');
-    await notificar('Consulta general',{'Tema':state.data.tipo,'Consulta':state.data.detalle});
+    await notificar('Consulta general',{tema:state.data.tema,consulta:state.data.consulta});
     setTimeout(backToMenu,2000);
   }
 }
 
-// URGENCIA
+// FLOW: URGENCIA
 async function flowUrgencia(){
   await botReply(`🚨 Para emergencias críticas, contactá a RRHH <strong>de inmediato</strong>:<br><br>📞 Teléfono RRHH: 11 3422-3777<br>📧 ${CFG.hrEmail}`,400);
   setTimeout(backToMenu,5000);
 }
 
-// FILE
+// FILE UPLOAD
 async function handleFile(file,context){
-  addMsg('user',`📎 ${file.name}`);
-  state.data.archivo=file.name;
+  addMsg('user',`📎 ${file.name}`); state.data.archivo=file.name;
   if(context==='aus_cert'){
     await botReply(`✅ Certificado recibido.<br>Podés presentarte en el <strong>Centro Médico Nogoya</strong> con tu DNI.`);
-    await notificar('Aviso de ausencia con certificado',{'Fecha':state.data.fecha,'Motivo':state.data.motivo,'Archivo':file.name});
+    await notificar('Aviso de ausencia con certificado',{fecha:state.data.fecha,motivo:state.data.motivo,dias_estimados:state.data.dias_estimados,archivo:file.name});
     setTimeout(backToMenu,2500);
   } else if(context==='prog_cert'){
     await botReply(`✅ Certificado de ausencia programada recibido.`);
-    await notificar('Ausencia programada con certificado',{'Tipo':state.data.tipo,'Detalle':state.data.detalle,'Archivo':file.name});
+    await notificar('Ausencia programada con certificado',{tipo_ausencia:state.data.tipo_ausencia,detalle:state.data.detalle,archivo:file.name});
     setTimeout(backToMenu,2500);
   }
 }
 
-// ═══ ROUTER ═══
+// ROUTER
 async function handleQR(val,label){
   disableQRs(); addMsg('user',label);
   if(state.step==='menu'){
-    if(val==='recibo'){ state.flow='recibo'; await flowRecibo(); }
+    if(val==='recibo'){ state.flow='recibo'; state.step='recibo_periodo'; await botReply('¿Qué <strong>período</strong> necesitás? (Ej: Mayo 2026, 1era quincena junio 2026, etc.)'); }
     else if(val==='ausencia'){ state.flow='ausencia'; state.step='aus_tipo'; await botReply('¿Qué tipo de aviso necesitás hacer?'); addQR([{label:'📝 Sin certificado',val:'sin_cert'},{label:'📎 Con certificado adjunto',val:'con_cert'},{label:'🏥 Presento el certificado en persona',val:'directo'}]); }
     else if(val==='tarde'){ state.flow='tarde'; state.step='tarde_motivo'; await botReply('¿Cuál es el <strong>motivo</strong> de tu demora?'); }
     else if(val==='programada'){ state.flow='programada'; state.step='prog_auth'; await botReply('¿Tu <strong>supervisor ya autorizó</strong> esta ausencia?'); addQR([{label:'✅ Sí, está autorizado',val:'si'},{label:'❌ Todavía no',val:'no'}]); }
@@ -470,18 +371,16 @@ async function handleSend(){
     else{ await botReply('Puedo ayudarte con recibo de sueldo, ausencias, llegada tarde, ausencia programada, CV, consultas o urgencias. ¿Con cuál necesitás ayuda?'); showMenu(); }
     return;
   }
-  if(state.flow==='ausencia') await flowAusencia(text);
+  if(state.flow==='recibo') await flowRecibo(text);
+  else if(state.flow==='ausencia') await flowAusencia(text);
   else if(state.flow==='tarde') await flowTarde(text);
   else if(state.flow==='programada') await flowProgramada(text);
   else if(state.flow==='consulta') await flowConsulta(text);
 }
 
-async function backToMenu(){
-  await botReply('¿Hay algo más en lo que pueda ayudarte?',300);
-  showMenu();
-}
+async function backToMenu(){ await botReply('¿Hay algo más en lo que pueda ayudarte?',300); showMenu(); }
 
-appShell.classList.add('hidden');
+document.getElementById('app-shell').classList.add('hidden');
 </script>
 </body>
 </html>
