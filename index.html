@@ -167,7 +167,7 @@ function addMsg(role,html,extraEl=null){
 function addTyping(){ const d=document.createElement('div'); d.className='msg bot'; d.id='typing'; d.innerHTML=`<div class="bot-av">UGI</div><div class="bubble"><div class="typing-wrap"><span></span><span></span><span></span></div></div>`; msgEl.appendChild(d); scroll(); }
 function removeTyping(){ const t=document.getElementById('typing'); if(t)t.remove(); }
 function botReply(html,delay=600,extraEl=null){ addTyping(); return new Promise(r=>setTimeout(()=>{ removeTyping(); addMsg('bot',html,extraEl); r(); },delay)); }
-function addQR(opts){ const d=document.createElement('div'); d.className='qr-wrap'; d.innerHTML=opts.map(o=>`<button class="qr" onclick="handleQR('${o.val}','${o.label.replace(/'/g,'\\'')}')">${o.label}</button>`).join(''); msgEl.appendChild(d); scroll(); }
+function addQR(opts){ const d=document.createElement('div'); d.className='qr-wrap'; d.innerHTML=opts.map(o=>`<button class="qr" onclick="handleQR('${o.val}','${o.label}')">${o.label}</button>`).join(''); msgEl.appendChild(d); scroll(); }
 function disableQRs(){ document.querySelectorAll('.qr').forEach(b=>{ b.classList.add('disabled'); b.onclick=null; }); }
 function addUpload(label,cb){ const d=document.createElement('div'); d.className='msg bot'; d.innerHTML=`<div class="bot-av" style="visibility:hidden">UGI</div><div class="bubble" style="background:transparent;border:none;padding:2px 0;width:100%"><label class="upload-zone"><input type="file" accept=".pdf,.jpg,.jpeg,.png" id="fu"><div class="uz-icon">📎</div><p>${label}</p><p class="small">PDF, JPG o PNG</p></label></div>`; msgEl.appendChild(d); d.querySelector('#fu').onchange=e=>{ const f=e.target.files[0]; if(f)cb(f); }; scroll(); }
 
