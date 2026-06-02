@@ -245,7 +245,7 @@ async function flowAusencia(input){
     if(input==='sin_cert'){ state.step='aus_fecha'; await botReply('¿Cuál es la <strong>fecha de tu ausencia</strong>? (Ej: hoy, 15/06)'); }
     else if(input==='con_cert'){ state.step='aus_fecha'; state.data.con_cert=true; await botReply('¿Cuál es la <strong>fecha de tu ausencia</strong>?'); }
     else {
-      await botReply(`Presentate en:<br>🏥 <strong>Centro Médico Nogoya</strong><br>Av. Hipólito Irigoyen 2218, El Talar, Pacheco<br>Llevá tu DNI. Atienden las 24hs.`);
+      await botReply(`✅ Aviso registrado. Presentar el certificado a la brevedad en la oficina de RRHH.`);
       await notificar('Ausencia - presentación directa de certificado',{'tipo':'Envío directo de certificado'});
       setTimeout(backToMenu,3500);
     }
@@ -383,7 +383,7 @@ async function handleFile(file,context){
   try{ prepared=await prepareFile(file); }catch(e){ console.error(e); }
   state.data.archivo=prepared.name;
   if(context==='aus_cert'){
-    await botReply(`✅ Certificado recibido.<br>Podés presentarte en el <strong>Centro Médico Nogoya</strong> con tu DNI.`);
+    await botReply(`✅ Certificado recibido correctamente.`);
     await notificar('Aviso de ausencia con certificado',{
       fecha:state.data.fecha,
       motivo:state.data.motivo,
@@ -446,4 +446,3 @@ document.getElementById('app-shell').classList.add('hidden');
 </script>
 </body>
 </html>
-
