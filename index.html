@@ -77,6 +77,7 @@ body{height:100%;font-family:'Sora',sans-serif;background:var(--bg);color:var(--
 .login-footer{font-size:11px;color:var(--text3);margin-top:24px;text-align:center}
 .hidden{display:none!important}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 <div class="login-screen" id="login-screen">
@@ -340,21 +341,56 @@ async function fileToBase64(file){
   });
 }
 
+async function imageToPdfBase64(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        try{
+          const {jsPDF}=window.jspdf;
+          const orientation=img.width>img.height?'landscape':'portrait';
+          const pdf=new jsPDF({orientation,unit:'px',format:[img.width,img.height]});
+          pdf.addImage(e.target.result,'JPEG',0,0,img.width,img.height);
+          const b64=pdf.output('datauristring').split(',')[1];
+          resolve(b64);
+        }catch(err){reject(err);}
+      };
+      img.onerror=reject;
+      img.src=e.target.result;
+    };
+    reader.onerror=reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function prepareFile(file){
+  const isImage=/^image/i.test(file.type);
+  if(isImage){
+    const b64=await imageToPdfBase64(file);
+    const pdfName=file.name.replace(/[.][^.]+$/,'.pdf');
+    return {base64:b64, name:pdfName, tipo:'application/pdf'};
+  } else {
+    const b64=await fileToBase64(file);
+    return {base64:b64, name:file.name, tipo:file.type};
+  }
+}
+
 async function handleFile(file,context){
   addMsg('user',`📎 ${file.name}`);
-  state.data.archivo=file.name;
   await botReply('Procesando archivo... ⏳',300);
-  let base64='';
-  try{ base64=await fileToBase64(file); }catch(e){ base64=''; }
+  let prepared={base64:'',name:file.name,tipo:file.type};
+  try{ prepared=await prepareFile(file); }catch(e){ console.error(e); }
+  state.data.archivo=prepared.name;
   if(context==='aus_cert'){
     await botReply(`✅ Certificado recibido.<br>Podés presentarte en el <strong>Centro Médico Nogoya</strong> con tu DNI.`);
     await notificar('Aviso de ausencia con certificado',{
       fecha:state.data.fecha,
       motivo:state.data.motivo,
       dias_estimados:state.data.dias_estimados,
-      archivo:file.name,
-      archivo_base64:base64,
-      archivo_tipo:file.type
+      archivo:prepared.name,
+      archivo_base64:prepared.base64,
+      archivo_tipo:prepared.tipo
     });
     setTimeout(backToMenu,2500);
   } else if(context==='prog_cert'){
@@ -362,9 +398,9 @@ async function handleFile(file,context){
     await notificar('Ausencia programada con certificado',{
       tipo_ausencia:state.data.tipo_ausencia,
       detalle:state.data.detalle,
-      archivo:file.name,
-      archivo_base64:base64,
-      archivo_tipo:file.type
+      archivo:prepared.name,
+      archivo_base64:prepared.base64,
+      archivo_tipo:prepared.tipo
     });
     setTimeout(backToMenu,2500);
   }
@@ -410,3 +446,4 @@ document.getElementById('app-shell').classList.add('hidden');
 </script>
 </body>
 </html>
+
