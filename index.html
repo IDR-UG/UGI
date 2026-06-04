@@ -288,10 +288,13 @@ async function flowProgramada(input){
     if(input==='si'){ state.step='prog_tipo'; await botReply('¿Cuál es el motivo de la ausencia programada?'); addQR([{label:'🎓 Estudios médicos',val:'Estudios médicos'},{label:'📝 Trámites personales',val:'Trámites personales'},{label:'🏫 Estudio / Universidad',val:'Estudio / Universidad'},{label:'🌴 Vacaciones',val:'Vacaciones'},{label:'📌 Otros',val:'Otros'}]); }
     else { await botReply('Necesitás la autorización de tu supervisor antes de registrar la ausencia. Volvé cuando tengas el OK.'); setTimeout(backToMenu,3000); }
   } else if(s==='prog_tipo'){
-    disableQRs(); state.data.tipo_ausencia=input; state.step='prog_detalle';
-    await botReply('Indicame las <strong>fechas</strong> de la ausencia y cualquier observación:');
-  } else if(s==='prog_detalle'){
-    state.data.detalle=input; state.step='prog_cert';
+    disableQRs(); state.data.tipo_ausencia=input; state.step='prog_fecha';
+    await botReply('¿Cuál es la <strong>fecha o fechas</strong> de la ausencia? (Ej: 15/06, 15 al 17/06)');
+  } else if(s==='prog_fecha'){
+    state.data.detalle=input; state.step='prog_comentario';
+    await botReply('¿Tenés algún <strong>comentario u observación</strong> adicional? (Si no tenés, escribí "No")');
+  } else if(s==='prog_comentario'){
+    state.data.comentario=input==='No'||input==='no'?'':input; state.step='prog_cert';
     await botReply('¿Tenés un certificado para adjuntar?');
     addQR([{label:'📎 Sí, adjunto ahora',val:'tiene_cert'},{label:'📅 Lo presento después',val:'sin_cert'}]);
   } else if(s==='prog_cert'){
@@ -299,7 +302,7 @@ async function flowProgramada(input){
     if(input==='tiene_cert'){ state.step='prog_upload'; await botReply('Adjuntá el certificado:'); addUpload('Adjuntá el certificado de ausencia programada',f=>handleFile(f,'prog_cert')); }
     else {
       await botReply('Recordá presentar los permisos firmados según el procedimiento interno.');
-      await notificar('Ausencia programada',{tipo_ausencia:state.data.tipo_ausencia,detalle:state.data.detalle,archivo:''});
+      await notificar('Ausencia programada',{tipo_ausencia:state.data.tipo_ausencia,detalle:state.data.detalle,comentario:state.data.comentario||'',archivo:''});
       setTimeout(backToMenu,2500);
     }
   }
@@ -398,6 +401,7 @@ async function handleFile(file,context){
     await notificar('Ausencia programada con certificado',{
       tipo_ausencia:state.data.tipo_ausencia,
       detalle:state.data.detalle,
+      comentario:state.data.comentario||'',
       archivo:prepared.name,
       archivo_base64:prepared.base64,
       archivo_tipo:prepared.tipo
