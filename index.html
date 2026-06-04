@@ -302,7 +302,7 @@ async function flowProgramada(input){
     if(input==='tiene_cert'){ state.step='prog_upload'; await botReply('Adjuntá el certificado:'); addUpload('Adjuntá el certificado de ausencia programada',f=>handleFile(f,'prog_cert')); }
     else {
       await botReply('Recordá presentar los permisos firmados según el procedimiento interno.');
-      await notificar('Ausencia programada',{tipo_ausencia:state.data.tipo_ausencia,detalle:state.data.detalle,comentario:state.data.comentario||'',archivo:''});
+      await notificar('Ausencia programada sin certificado',{tipo_ausencia:state.data.tipo_ausencia,detalle:state.data.detalle,comentario:state.data.comentario||'',archivo:''});
       setTimeout(backToMenu,2500);
     }
   }
