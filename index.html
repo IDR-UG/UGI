@@ -264,7 +264,7 @@ async function flowAusencia(input){
     } else {
       state.step='aus_done';
       await botReply('Aviso registrado correctamente.');
-      await notificar('Aviso de ausencia sin certificado',{fecha:state.data.fecha,motivo:state.data.motivo,dias_estimados:state.data.dias_estimados});
+      await notificar('Aviso de ausencia sin certificado',{fecha_ausencia:state.data.fecha,motivo:state.data.motivo,dias_estimados:state.data.dias_estimados});
       setTimeout(backToMenu,2000);
     }
   }
@@ -275,7 +275,7 @@ async function flowTarde(input){
   if(state.step==='tarde_motivo'){
     state.data.motivo=input; state.step='tarde_done';
     await botReply('¡Gracias por avisar! 🙏 Notificamos a tu supervisor.');
-    await notificar('Aviso de llegada tarde',{motivo:state.data.motivo,fecha:new Date().toLocaleDateString('es-AR')});
+    await notificar('Aviso de llegada tarde',{motivo:state.data.motivo,fecha_sistema:new Date().toLocaleDateString('es-AR')});
     setTimeout(backToMenu,2000);
   }
 }
@@ -302,7 +302,7 @@ async function flowProgramada(input){
     if(input==='tiene_cert'){ state.step='prog_upload'; await botReply('Adjuntá el certificado:'); addUpload('Adjuntá el certificado de ausencia programada',f=>handleFile(f,'prog_cert')); }
     else {
       await botReply('Recordá presentar los permisos firmados según el procedimiento interno.');
-      await notificar('Ausencia programada sin certificado',{tipo_ausencia:state.data.tipo_ausencia,detalle:state.data.detalle,comentario:state.data.comentario||'',archivo:''});
+      await notificar('Ausencia programada sin certificado',{tipo_ausencia:state.data.tipo_ausencia,fecha_ausencia:state.data.detalle,comentario:state.data.comentario||'',archivo:''});
       setTimeout(backToMenu,2500);
     }
   }
@@ -388,7 +388,7 @@ async function handleFile(file,context){
   if(context==='aus_cert'){
     await botReply(`✅ Certificado recibido correctamente.`);
     await notificar('Aviso de ausencia con certificado',{
-      fecha:state.data.fecha,
+      fecha_ausencia:state.data.fecha,
       motivo:state.data.motivo,
       dias_estimados:state.data.dias_estimados,
       archivo:prepared.name,
@@ -400,7 +400,7 @@ async function handleFile(file,context){
     await botReply(`✅ Certificado de ausencia programada recibido.`);
     await notificar('Ausencia programada con certificado',{
       tipo_ausencia:state.data.tipo_ausencia,
-      detalle:state.data.detalle,
+      fecha_ausencia:state.data.detalle,
       comentario:state.data.comentario||'',
       archivo:prepared.name,
       archivo_base64:prepared.base64,
