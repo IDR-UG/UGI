@@ -249,9 +249,19 @@ async function flowAusencia(input){
       await botReply('¿Cuál es la <strong>fecha de tu ausencia</strong>? (Ej: hoy, 15/06)');
     }
   } else if(s==='aus_directo_fecha'){
-    state.data.fecha_ausencia=input; state.step='aus_directo_done';
+    state.data.fecha_ausencia=input; state.step='aus_directo_motivo';
+    await botReply('¿Cuál es el <strong>motivo de la ausencia</strong>?');
+  } else if(s==='aus_directo_motivo'){
+    state.data.motivo=input; state.step='aus_directo_dias';
+    await botReply('¿Cuántos <strong>días estimados</strong> de ausencia?');
+  } else if(s==='aus_directo_dias'){
+    state.data.dias_estimados=input; state.step='aus_directo_done';
     await botReply(`✅ Aviso registrado. Presentar el certificado a la brevedad en la oficina de RRHH.`);
-    await notificar('Ausencia - presentación directa de certificado',{fecha_ausencia:state.data.fecha_ausencia});
+    await notificar('Ausencia - presentación directa de certificado',{
+      fecha_ausencia:state.data.fecha_ausencia,
+      motivo:state.data.motivo,
+      dias_estimados:state.data.dias_estimados
+    });
     setTimeout(backToMenu,2500);
   } else if(s==='aus_fecha'){
     state.data.fecha=input; state.step='aus_motivo';
