@@ -245,10 +245,14 @@ async function flowAusencia(input){
     if(input==='sin_cert'){ state.step='aus_fecha'; await botReply('¿Cuál es la <strong>fecha de tu ausencia</strong>? (Ej: hoy, 15/06)'); }
     else if(input==='con_cert'){ state.step='aus_fecha'; state.data.con_cert=true; await botReply('¿Cuál es la <strong>fecha de tu ausencia</strong>?'); }
     else {
-      await botReply(`✅ Aviso registrado. Presentar el certificado a la brevedad en la oficina de RRHH.`);
-      await notificar('Ausencia - presentación directa de certificado',{'tipo':'Envío directo de certificado'});
-      setTimeout(backToMenu,3500);
+      state.step='aus_directo_fecha';
+      await botReply('¿Cuál es la <strong>fecha de tu ausencia</strong>? (Ej: hoy, 15/06)');
     }
+  } else if(s==='aus_directo_fecha'){
+    state.data.fecha_ausencia=input; state.step='aus_directo_done';
+    await botReply(`✅ Aviso registrado. Presentar el certificado a la brevedad en la oficina de RRHH.`);
+    await notificar('Ausencia - presentación directa de certificado',{fecha_ausencia:state.data.fecha_ausencia});
+    setTimeout(backToMenu,2500);
   } else if(s==='aus_fecha'){
     state.data.fecha=input; state.step='aus_motivo';
     await botReply('¿Cuál es el <strong>motivo de la ausencia</strong>?');
