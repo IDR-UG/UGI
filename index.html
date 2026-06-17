@@ -308,9 +308,18 @@ async function flowProgramada(input){
     state.data.detalle=input; state.step='prog_comentario';
     await botReply('¿Tenés algún <strong>comentario u observación</strong> adicional? (Si no tenés, escribí "No")');
   } else if(s==='prog_comentario'){
-    state.data.comentario=input==='No'||input==='no'?'':input; state.step='prog_cert';
-    await botReply('¿Tenés un certificado para adjuntar?');
-    addQR([{label:'📎 Sí, adjunto ahora',val:'tiene_cert'},{label:'📅 Lo presento después',val:'sin_cert'}]);
+    state.data.comentario=input==='No'||input==='no'?'':input;
+    // Vacaciones no requiere certificado
+    if(state.data.tipo_ausencia==='Vacaciones'){
+      state.step='prog_done';
+      await botReply('✅ Solicitud de vacaciones registrada.');
+      await notificar('Ausencia programada sin certificado',{tipo_ausencia:state.data.tipo_ausencia,fecha_ausencia:state.data.detalle,comentario:state.data.comentario||'',archivo:''});
+      setTimeout(backToMenu,2000);
+    } else {
+      state.step='prog_cert';
+      await botReply('¿Tenés un certificado para adjuntar?');
+      addQR([{label:'📎 Sí, adjunto ahora',val:'tiene_cert'},{label:'📅 Lo presento después',val:'sin_cert'}]);
+    }
   } else if(s==='prog_cert'){
     disableQRs();
     if(input==='tiene_cert'){ state.step='prog_upload'; await botReply('Adjuntá el certificado:'); addUpload('Adjuntá el certificado de ausencia programada',f=>handleFile(f,'prog_cert')); }
@@ -335,9 +344,12 @@ async function flowConsulta(input){
     disableQRs(); state.data.tema=input; state.step='cons_detalle';
     await botReply(`Contame más sobre tu consulta de <strong>${input}</strong>:`);
   } else if(s==='cons_detalle'){
-    state.data.consulta=input; state.step='cons_done';
+    state.data.consulta=input; state.step='cons_comentario';
+    await botReply('¿Tenés algún <strong>comentario u observación</strong> adicional? (Si no tenés, escribí "No")');
+  } else if(s==='cons_comentario'){
+    state.data.comentario=input==='No'||input==='no'?'':input; state.step='cons_done';
     await botReply('Recibimos tu consulta. En <strong>24 a 48 hs</strong> te contestamos. ¡Gracias!');
-    await notificar('Consulta general',{tema:state.data.tema,consulta:state.data.consulta});
+    await notificar('Consulta general',{tema:state.data.tema,consulta:state.data.consulta,comentario:state.data.comentario||''});
     setTimeout(backToMenu,2000);
   }
 }
