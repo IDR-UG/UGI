@@ -207,7 +207,7 @@ function showMenu(){
   addQR([
     {label:'💰 Recibo de sueldo',val:'recibo'},
     {label:'🏥 Ausencia / Enfermedad',val:'ausencia'},
-    {label:'⏰ Llegué tarde',val:'tarde'},
+    {label:'⏰ Aviso de llegada tarde',val:'tarde'},
     {label:'📋 Ausencia programada',val:'programada'},
     {label:'📄 Envío de CV',val:'cv'},
     {label:'💬 Consulta general',val:'consulta'},
@@ -253,7 +253,7 @@ async function flowAusencia(input){
     await botReply('¿Cuál es el <strong>motivo de la ausencia</strong>?');
   } else if(s==='aus_directo_motivo'){
     state.data.motivo=input; state.step='aus_directo_dias';
-    await botReply('¿Cuántos días de ausencia indica el certificado?');
+    await botReply('¿Cuántos <strong>días estimados</strong> de ausencia?');
   } else if(s==='aus_directo_dias'){
     state.data.dias_estimados=input; state.step='aus_directo_done';
     await botReply(`✅ Aviso registrado. Presentar el certificado a la brevedad en la oficina de RRHH.`);
@@ -268,7 +268,7 @@ async function flowAusencia(input){
     await botReply('¿Cuál es el <strong>motivo de la ausencia</strong>?');
   } else if(s==='aus_motivo'){
     state.data.motivo=input; state.step='aus_dias';
-    await botReply('¿Cuántos días de ausencia indica el certificado?');
+    await botReply('¿Cuántos <strong>días estimados</strong> de ausencia?');
   } else if(s==='aus_dias'){
     state.data.dias_estimados=input;
     if(state.data.con_cert){
