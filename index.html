@@ -194,6 +194,7 @@ async function notificar(tipo, campos){
 
 // MENU
 async function startChat(){
+  resetTimeout();
   state={step:'menu',flow:null,data:{}};
   const hora=new Date().getHours();
   const s=hora<12?'¡Buenos días':hora<19?'¡Buenas tardes':'¡Buenas noches';
@@ -473,6 +474,42 @@ async function handleSend(){
 async function backToMenu(){ await botReply('¿Hay algo más en lo que pueda ayudarte?',300); showMenu(); }
 
 document.getElementById('app-shell').classList.add('hidden');
+// ═══ SESSION TIMEOUT ═══
+const TIMEOUT_MS = 60000;
+let timeoutTimer = null;
+let warningTimer = null;
+
+function resetTimeout(){
+  clearTimeout(timeoutTimer);
+  clearTimeout(warningTimer);
+  if(!session) return;
+  warningTimer = setTimeout(()=>{
+    addMsg('bot','⚠️ <strong>Tu sesión se cerrará en 10 segundos</strong> por inactividad. Escribí algo para continuar.');
+  }, 50000);
+  timeoutTimer = setTimeout(()=>{ doLogout(); }, TIMEOUT_MS);
+}
+
+function doLogout(){
+  clearTimeout(timeoutTimer);
+  clearTimeout(warningTimer);
+  session = null;
+  state = {step:'menu', flow:null, data:{}};
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('app-shell').classList.add('hidden');
+  document.getElementById('l-dni').value = '';
+  document.getElementById('l-pin').value = '';
+  document.getElementById('login-error').textContent = 'Sesión cerrada por inactividad.';
+  document.getElementById('login-btn').disabled = false;
+  document.getElementById('login-btn').textContent = 'Ingresar';
+  const ls = document.getElementById('login-screen');
+  ls.style.opacity = '1';
+  ls.classList.remove('hidden');
+}
+
+['click','keydown','touchstart','scroll'].forEach(evt => {
+  document.addEventListener(evt, ()=>{ if(session) resetTimeout(); }, {passive:true});
+});
+
 </script>
 </body>
 </html>
