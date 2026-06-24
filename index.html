@@ -299,7 +299,7 @@ async function flowProgramada(input){
   const s=state.step;
   if(s==='prog_auth'){
     disableQRs();
-    if(input==='si'){ state.step='prog_tipo'; await botReply('¿Cuál es el motivo de la ausencia programada?'); addQR([{label:'🎓 Estudios médicos',val:'Estudios médicos'},{label:'📝 Trámites personales',val:'Trámites personales'},{label:'🏫 Estudio / Universidad',val:'Estudio / Universidad'},{label:'🌴 Vacaciones',val:'Vacaciones'},{label:'📌 Otros',val:'Otros'}]); }
+    if(input==='si'){ state.step='prog_tipo'; await botReply('¿Cuál es el motivo de la ausencia programada?'); addQR([{label:'🎓 Estudios médicos',val:'Estudios médicos'},{label:'📝 Trámites personales',val:'Trámites personales'},{label:'🏫 Estudio / Universidad',val:'Estudio / Universidad'},{label:'📌 Otros',val:'Otros'}]); }
     else { await botReply('Necesitás la autorización de tu supervisor antes de registrar la ausencia. Volvé cuando tengas el OK.'); setTimeout(backToMenu,3000); }
   } else if(s==='prog_tipo'){
     disableQRs(); state.data.tipo_ausencia=input; state.step='prog_fecha';
