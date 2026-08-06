@@ -441,10 +441,10 @@ async function handleFile(file,context){
 async function handleQR(val,label){
   disableQRs(); addMsg('user',label);
   if(state.step==='menu'){
-    if(val==='recibo'){ state.flow='recibo'; state.step='recibo_periodo'; await botReply('¿Qué <strong>período</strong> necesitás? (Ej: Mayo 2026, 1era quincena junio 2026, etc.)'); }
+    if(val==='recibo'){ await botReply('⚠️ <strong>IMPORTANTE:</strong> Esta opción no está disponible en UGI.<br><br>Para gestionar tu recibo de sueldo ingresá a <strong>Naaloo</strong> 📲'); setTimeout(backToMenu,4000); }
     else if(val==='ausencia'){ state.flow='ausencia'; state.step='aus_tipo'; await botReply('¿Qué tipo de aviso necesitás hacer?'); addQR([{label:'📝 Sin certificado',val:'sin_cert'},{label:'📎 Con certificado adjunto',val:'con_cert'},{label:'🏥 Presento el certificado en persona',val:'directo'}]); }
     else if(val==='tarde'){ state.flow='tarde'; state.step='tarde_motivo'; await botReply('¿Cuál es el <strong>motivo</strong> de tu demora?'); }
-    else if(val==='programada'){ state.flow='programada'; state.step='prog_auth'; await botReply('¿Tu <strong>supervisor ya autorizó</strong> esta ausencia?'); addQR([{label:'✅ Sí, está autorizado',val:'si'},{label:'❌ Todavía no',val:'no'}]); }
+    else if(val==='programada'){ await botReply('⚠️ <strong>IMPORTANTE:</strong> Esta opción no está disponible en UGI.<br><br>Para registrar una ausencia programada ingresá a <strong>Naaloo</strong> 📲'); setTimeout(backToMenu,4000); }
     else if(val==='cv'){ state.flow='cv'; await flowCV(); }
     else if(val==='consulta'){ state.flow='consulta'; state.step='cons_tipo'; await botReply('¿Sobre qué tema es tu consulta?'); addQR([{label:'👔 Uniformes',val:'Uniformes'},{label:'💰 Liquidación',val:'Liquidación'},{label:'🌴 Vacaciones',val:'Vacaciones'},{label:'📌 Otro',val:'Otro'}]); }
     else if(val==='urgencia'){ state.flow='urgencia'; await flowUrgencia(); }
@@ -464,10 +464,10 @@ async function handleSend(){
     else{ await botReply('Puedo ayudarte con recibo de sueldo, ausencias, llegada tarde, ausencia programada, CV, consultas o urgencias. ¿Con cuál necesitás ayuda?'); showMenu(); }
     return;
   }
-  if(state.flow==='recibo') await flowRecibo(text);
+  if(state.flow==='recibo'){ await botReply('⚠️ <strong>IMPORTANTE:</strong> Esta opción no está disponible en UGI.<br><br>Para gestionar tu recibo de sueldo ingresá a <strong>Naaloo</strong> 📲'); setTimeout(backToMenu,4000); }
   else if(state.flow==='ausencia') await flowAusencia(text);
   else if(state.flow==='tarde') await flowTarde(text);
-  else if(state.flow==='programada') await flowProgramada(text);
+  else if(state.flow==='programada'){ await botReply('⚠️ <strong>IMPORTANTE:</strong> Esta opción no está disponible en UGI.<br><br>Para registrar una ausencia programada ingresá a <strong>Naaloo</strong> 📲'); setTimeout(backToMenu,4000); }
   else if(state.flow==='consulta') await flowConsulta(text);
 }
 
