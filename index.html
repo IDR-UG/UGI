@@ -505,7 +505,7 @@ function doLogout(){
   ls.style.opacity = '1';
   ls.classList.remove('hidden');
 }
-
+ 
 ['click','keydown','touchstart','scroll'].forEach(evt => {
   document.addEventListener(evt, ()=>{ if(session) resetTimeout(); }, {passive:true});
 });
